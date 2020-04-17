@@ -26,9 +26,23 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    //Log4j
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.1'
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = 'magneto.db.App'
+    mainClassName = 'magneto.db.server.MagnetoServer'
+}
+
+task server(type: JavaExec) {
+    main = 'magneto.db.server.MagnetoServer'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task client(type: JavaExec) {
+    main = 'magneto.db.client.MagnetoClientShell'
+    classpath = sourceSets.main.runtimeClasspath
 }
