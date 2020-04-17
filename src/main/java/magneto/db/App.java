@@ -5,7 +5,7 @@ package magneto.db;
 
 public class App {
     public String getGreeting() {
-        return "Hello world.";
+        return "Magneto DB";
     }
 
     public static void main(String[] args) {
