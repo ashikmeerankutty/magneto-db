@@ -16,8 +16,6 @@ public class MagnetoStore {
   }
 
   public void addToStore(String key, String value) {
-    System.out.println(key);
-    System.out.println(value);
     magnetoStore.put(key, value);
   } 
 
