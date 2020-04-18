@@ -27,6 +27,7 @@ public class MagnetoStore {
   }
 
   public String getFromStore(String key) {
-    return magnetoStore.get(key);
+    if(isExists(key)) return magnetoStore.get(key);
+    return "null";
   }
 }
