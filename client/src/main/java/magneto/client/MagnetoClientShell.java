@@ -1,4 +1,4 @@
-package magneto.db.client;
+package magneto.client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,17 +11,12 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * @author Ashik Meerankutty
  *
  */
 
 public class MagnetoClientShell {
-
-    private static final Logger logger = LogManager.getLogger(MagnetoClientShell.class);
 
     public static final String PROMPT = "> ";
     protected final PrintStream commandOutput;

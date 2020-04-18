@@ -16,17 +16,12 @@ import java.util.Set;
 
 import javax.xml.crypto.Data;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * @author Ashik Meerankutty
  *
  */
 
 public class MagnetoServer {
-
-    private static final Logger logger = LogManager.getLogger();
 
     public static void main(String args[]) throws IOException {
         Selector selector = Selector.open();
