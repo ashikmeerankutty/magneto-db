@@ -3,12 +3,12 @@
  */
 package magneto.db;
 
-public class App {
-    public String getGreeting() {
-        return "Magneto DB";
-    }
+import java.io.IOException;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+import magneto.db.server.MagnetoServer;
+
+public class App {
+    public static void main(String[] args) throws IOException {
+        MagnetoServer.main(args);        
     }
 }
