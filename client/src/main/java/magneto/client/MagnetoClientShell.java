@@ -44,9 +44,9 @@ public class MagnetoClientShell {
     }
 
     public static void main(String args[]) {
-        // String host = args[0];
-        // Integer port = Integer.parseInt(args[1]);
-        MagnetoClientShell shell = new MagnetoClientShell("localhost", 5678, System.out, System.err);
+        String host = args[0];
+        Integer port = Integer.parseInt(args[1]);
+        MagnetoClientShell shell = new MagnetoClientShell(host, port, System.out, System.err);
         try {
             shell.process();
         }
