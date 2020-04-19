@@ -24,10 +24,11 @@ import javax.xml.crypto.Data;
 public class MagnetoServer {
 
     public static void main(String args[]) throws IOException {
+        Integer port = Integer.parseInt(args[0]);
         Selector selector = Selector.open();
 
         ServerSocketChannel magnetoSocket = ServerSocketChannel.open();
-        InetSocketAddress magnetoAddress = new InetSocketAddress("localhost", 5678);
+        InetSocketAddress magnetoAddress = new InetSocketAddress("localhost", port);
 
         magnetoSocket.bind(magnetoAddress);
 
