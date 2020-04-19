@@ -9,14 +9,9 @@ services:
       context: ./client
       dockerfile: Dockerfile
 
-  server: 
+  node: 
     network_mode: host
-    container_name: 'magneto-db'
     restart: 'always'
     build:
       context: ./server
       dockerfile: Dockerfile
-    ports: 
-      - 5678:5678
-    expose:
-      - 5678
