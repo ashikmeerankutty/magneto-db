@@ -37,7 +37,7 @@ public class MagnetoServer {
         int ops = magnetoSocket.validOps();
         SelectionKey selectKey = magnetoSocket.register(selector, ops, null);
 
-        System.out.println("Server started waiting for client connection");
+        System.out.println("Server started waiting for client connection at "+"localhost"+":"+port);
 
         MagnetoStore magnetoStore = new MagnetoStore();
 
@@ -63,7 +63,14 @@ public class MagnetoServer {
                     SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
                     ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
                     magnetoClient.read(magnetoBuffer);
+                    // if(magnetoBuffer.equals('-1')){
+                    //     magnetoClient.close();
+                    // }
                     String data = new String(magnetoBuffer.array()).trim();
+                    if(data.equals("-1")) {
+                        magnetoClient.close();
+                    } 
+                    System.out.println(data);
                     String[] words = new String[3];
                     if (data.length() > 0) {
                         words = data.split("\\s+");

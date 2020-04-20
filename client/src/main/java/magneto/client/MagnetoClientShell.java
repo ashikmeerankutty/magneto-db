@@ -92,6 +92,9 @@ public class MagnetoClientShell {
                 System.out.println("exit -- Exit from this shell.");
                 System.out.println();
             } else if (line.startsWith("quit") || line.startsWith("exit")) {
+                byte[] message = new String("-1").getBytes();
+                ByteBuffer buffer = ByteBuffer.wrap(message);
+                this.magnetoClient.write(buffer);
                 System.out.println("ok bye");
                 System.exit(0);
             } else {
