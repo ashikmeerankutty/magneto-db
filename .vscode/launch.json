@@ -1,0 +1,43 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug (Launch) - Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-MagnetoClientShell<magneto-client>",
+      "request": "launch",
+      "mainClass": "magneto.client.MagnetoClientShell",
+      "projectName": "magneto-client",
+      "args": ["localhost","5678"]
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-App<magneto-db>",
+      "request": "launch",
+      "mainClass": "magneto.db.App",
+      "projectName": "magneto-db"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-MagnetoRouter<magneto-db>",
+      "request": "launch",
+      "mainClass": "magneto.db.routing.MagnetoRouter",
+      "projectName": "magneto-db"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-MagnetoServer<magneto-db>",
+      "request": "launch",
+      "mainClass": "magneto.db.server.MagnetoServer",
+      "projectName": "magneto-db"
+    }
+  ]
+}

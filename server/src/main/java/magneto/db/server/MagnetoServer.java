@@ -1,5 +1,6 @@
 package magneto.db.server;
 
+import magneto.db.routing.MagnetoClientRouter;
 import magneto.db.store.*;
 
 import java.io.IOException;
@@ -23,29 +24,46 @@ import javax.xml.crypto.Data;
 
 public class MagnetoServer {
 
-    public static void main(String args[]) throws IOException {
-        Integer port = Integer.parseInt(args[0]);
-        Selector selector = Selector.open();
+    public Selector selector;
+    public ServerSocketChannel magnetoSocket;
 
-        ServerSocketChannel magnetoSocket = ServerSocketChannel.open();
+    MagnetoServer(int port) throws IOException {
+        this.selector = Selector.open();
+        this.magnetoSocket = ServerSocketChannel.open();
         InetSocketAddress magnetoAddress = new InetSocketAddress("localhost", port);
-
-        magnetoSocket.bind(magnetoAddress);
-
-        magnetoSocket.configureBlocking(false);
-
+        this.magnetoSocket.bind(magnetoAddress);
+        this.magnetoSocket.configureBlocking(false);
         int ops = magnetoSocket.validOps();
-        SelectionKey selectKey = magnetoSocket.register(selector, ops, null);
-
+        magnetoSocket.register(selector, ops, null);
         System.out.println("Server started waiting for client connection at "+"localhost"+":"+port);
+    }
 
+    public static void main(String args[]) throws IOException {
+        String nodeType = args[0];
+        int port = Integer.parseInt(args[1]);
+
+        MagnetoServer magnetoServer = new MagnetoServer(port);
+        if(nodeType.equals("node"))
+        {
+            magnetoServer.runNode();
+        }
+        if(nodeType.equals("master")) {
+            magnetoServer.runMaster();
+        }
+    }
+
+    public void runNode() throws IOException {
         MagnetoStore magnetoStore = new MagnetoStore();
 
         // Keeps server running
         while (true) {
             // Selects a set of keys whose corresponding channels are ready for I/O
             // operations
-            selector.select();
+            try {
+                this.selector.select();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             Set<SelectionKey> magnetoKeys = selector.selectedKeys();
             Iterator<SelectionKey> magnetoIterator = magnetoKeys.iterator();
@@ -55,7 +73,7 @@ public class MagnetoServer {
 
                 // Tests whether this key's channel is ready to accept a new socket connection
                 if (selectedKey.isAcceptable()) {
-                    SocketChannel magnetoClient = magnetoSocket.accept();
+                    SocketChannel magnetoClient = this.magnetoSocket.accept();
                     magnetoClient.configureBlocking(false);
                     magnetoClient.register(selector, SelectionKey.OP_READ);
                     System.out.println("Connection accepted: " + magnetoClient.getLocalAddress());
@@ -63,14 +81,10 @@ public class MagnetoServer {
                     SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
                     ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
                     magnetoClient.read(magnetoBuffer);
-                    // if(magnetoBuffer.equals('-1')){
-                    //     magnetoClient.close();
-                    // }
                     String data = new String(magnetoBuffer.array()).trim();
                     if(data.equals("-1")) {
                         magnetoClient.close();
                     } 
-                    System.out.println(data);
                     String[] words = new String[3];
                     if (data.length() > 0) {
                         words = data.split("\\s+");
@@ -91,4 +105,47 @@ public class MagnetoServer {
         }
     }
 
+    public void runMaster() throws IOException {
+
+        // Keeps server running
+        while (true) {
+            MagnetoClientRouter magnetoClientRouter = new MagnetoClientRouter();
+            // Selects a set of keys whose corresponding channels are ready for I/O
+            // operations
+            try {
+                this.selector.select();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Set<SelectionKey> magnetoKeys = selector.selectedKeys();
+            Iterator<SelectionKey> magnetoIterator = magnetoKeys.iterator();
+
+            while (magnetoIterator.hasNext()) {
+                SelectionKey selectedKey = magnetoIterator.next();
+
+                // Tests whether this key's channel is ready to accept a new socket connection
+                if (selectedKey.isAcceptable()) {
+                    SocketChannel magnetoClient = this.magnetoSocket.accept();
+                    magnetoClient.configureBlocking(false);
+                    magnetoClient.register(selector, SelectionKey.OP_READ);
+                    System.out.println("Connection accepted: " + magnetoClient.getLocalAddress());
+                } else if (selectedKey.isReadable()) {
+                    SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
+                    ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
+                    magnetoClient.read(magnetoBuffer);
+                    String data = new String(magnetoBuffer.array()).trim();
+                    if(data.equals("-1")) {
+                        magnetoClient.close();
+                    } 
+                    String[] words = new String[3];
+                    words = data.split("\\s+");
+                    String key = words[1];
+                    magnetoClientRouter.getNode(key);
+                    System.out.println("Message received: " + data);
+                }
+            }
+            magnetoIterator.remove();
+        }
+    }
 }

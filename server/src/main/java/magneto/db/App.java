@@ -9,6 +9,6 @@ import magneto.db.server.MagnetoServer;
 
 public class App {
     public static void main(String[] args) throws IOException {
-        MagnetoServer.main(args);        
+        MagnetoServer.main(args);
     }
 }
