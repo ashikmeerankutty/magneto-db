@@ -141,7 +141,16 @@ public class MagnetoServer {
                     String[] words = new String[3];
                     words = data.split("\\s+");
                     String key = words[1];
-                    magnetoClientRouter.getNode(key);
+                    String response;
+                    if(words[0].equals("put")) {
+                        response = magnetoClientRouter.getNode(key, data);
+                    }
+                    if(words[0].equals("get")) {
+                        response = magnetoClientRouter.getNode(key, data);
+                        byte[] message = new String(response).getBytes();
+                        ByteBuffer responseBuffer = ByteBuffer.wrap(message);
+                        magnetoClient.write(responseBuffer);
+                    }
                     System.out.println("Message received: " + data);
                 }
             }
