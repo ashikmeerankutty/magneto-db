@@ -3,13 +3,11 @@ package magneto.client;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.Future;
 
 /**
  * @author Ashik Meerankutty
@@ -18,6 +16,7 @@ import java.util.concurrent.Future;
 
 public class MagnetoClientShell {
 
+    public static final String CONN_EXIT = "exit";
     public static final String PROMPT = "> ";
     protected final PrintStream commandOutput;
     protected final PrintStream errorStream;
@@ -28,7 +27,6 @@ public class MagnetoClientShell {
         this.errorStream = errorStream;
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             InetSocketAddress magnetoAddress = new InetSocketAddress(host, port);
             this.magnetoClient = SocketChannel.open(magnetoAddress);
             commandOutput.println("Established connection to test via " + host + ":" + port);
@@ -64,17 +62,13 @@ public class MagnetoClientShell {
                 byte[] message = new String(line).getBytes();
                 ByteBuffer buffer = ByteBuffer.wrap(message);
                 this.magnetoClient.write(buffer);
-                System.out.println("Putting Data");
-                //TODO: Implement put operation
             } else if (line.toLowerCase().startsWith("get")) {
                 byte[] message = new String(line).getBytes();
                 ByteBuffer writeBuffer = ByteBuffer.wrap(message);
                 this.magnetoClient.write(writeBuffer);
                 ByteBuffer readBuffer = ByteBuffer.allocate(256);
                 this.magnetoClient.read(readBuffer);
-                System.out.println("Received from server: "
-                +new String(readBuffer.array()).trim());
-                // System.out.println("get(key)");
+                System.out.println(new String(readBuffer.array()).trim());
             } else if (line.toLowerCase().startsWith("delete")) {
                 //TODO: Implement delete operation
                 System.out.println("delete(key)");
@@ -92,13 +86,12 @@ public class MagnetoClientShell {
                 System.out.println("exit -- Exit from this shell.");
                 System.out.println();
             } else if (line.startsWith("quit") || line.startsWith("exit")) {
-                byte[] message = new String("-1").getBytes();
+                byte[] message = new String(CONN_EXIT).getBytes();
                 ByteBuffer buffer = ByteBuffer.wrap(message);
                 this.magnetoClient.write(buffer);
                 System.out.println("ok bye");
                 System.exit(0);
             } else {
-                System.out.println();
                 System.out.println("Invalid command");
             }
             showPrompt();
