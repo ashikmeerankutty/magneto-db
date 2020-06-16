@@ -2,8 +2,6 @@ package magneto.db.routing;
 
 import magneto.db.node.Node;
 
-import java.util.Arrays;
-
 public class MagnetoRouter implements Node{
   private final String idc;
   private final String ip;

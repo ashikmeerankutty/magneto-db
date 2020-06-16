@@ -46,7 +46,7 @@ public class MagnetoRequests implements Requests {
         return;
       }
       putData(words[1], words[2], magnetoStore);
-      response = "Value Inserted";
+      response = "success";
       byte[] message = new String(response).getBytes();
       ByteBuffer responseBuffer = ByteBuffer.wrap(message);
       magnetoClient.write(responseBuffer);
