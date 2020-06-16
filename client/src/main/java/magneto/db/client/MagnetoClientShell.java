@@ -62,6 +62,9 @@ public class MagnetoClientShell {
                 byte[] message = new String(line).getBytes();
                 ByteBuffer buffer = ByteBuffer.wrap(message);
                 this.magnetoClient.write(buffer);
+                ByteBuffer putReadBuffer = ByteBuffer.allocate(256);
+                this.magnetoClient.read(putReadBuffer);
+                System.out.println(new String(putReadBuffer.array()).trim());
             } else if (line.toLowerCase().startsWith("get")) {
                 byte[] message = new String(line).getBytes();
                 ByteBuffer writeBuffer = ByteBuffer.wrap(message);
