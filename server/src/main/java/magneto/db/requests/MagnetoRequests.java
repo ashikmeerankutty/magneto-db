@@ -38,8 +38,19 @@ public class MagnetoRequests implements Requests {
     words = data.split("\\s+");
     String response;
     if(words[0].equals("put")) {
+      if(words.length < 3) {
+        response = "Put requires two arguments only one provided";
+        byte[] message = new String(response).getBytes();
+        ByteBuffer responseBuffer = ByteBuffer.wrap(message);
+        magnetoClient.write(responseBuffer);
+        return;
+      }
       putData(words[1], words[2], magnetoStore);
-    }
+      response = "Value Inserted";
+      byte[] message = new String(response).getBytes();
+      ByteBuffer responseBuffer = ByteBuffer.wrap(message);
+      magnetoClient.write(responseBuffer);
+    } else
     if(words[0].equals("get")) {
       response = getData(words[1], magnetoStore);
       byte[] message = new String(response).getBytes();
