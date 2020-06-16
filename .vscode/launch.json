@@ -6,6 +6,14 @@
   "configurations": [
     {
       "type": "java",
+      "name": "CodeLens (Launch) - App",
+      "request": "launch",
+      "mainClass": "magneto.db.App",
+      "projectName": "magneto-client",
+      "args": "localhost 5678"
+    },
+    {
+      "type": "java",
       "name": "Debug (Launch) - Current File",
       "request": "launch",
       "mainClass": "${file}"
@@ -14,9 +22,12 @@
       "type": "java",
       "name": "Debug (Launch)-MagnetoClientShell<magneto-client>",
       "request": "launch",
-      "mainClass": "magneto.client.MagnetoClientShell",
+      "mainClass": "magneto.db.client.MagnetoClientShell",
       "projectName": "magneto-client",
-      "args": ["localhost","5678"]
+      "args": [
+        "localhost",
+        "5678"
+      ]
     },
     {
       "type": "java",

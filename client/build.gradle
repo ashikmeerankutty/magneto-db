@@ -30,13 +30,13 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'magneto.client.MagnetoClientShell'
+    mainClassName = 'magneto.db.client.MagnetoClientShell'
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'magneto.client.MagnetoClientShell'
+                'Main-Class': 'magneto.db.client.MagnetoClientShell'
         )
     }
 }

@@ -42,11 +42,6 @@ task server(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task client(type: JavaExec) {
-    main = 'magneto.db.client.MagnetoClientShell'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
 jar {
     manifest {
         attributes(

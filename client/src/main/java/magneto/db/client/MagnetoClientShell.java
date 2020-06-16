@@ -1,4 +1,4 @@
-package magneto.client;
+package magneto.db.client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
