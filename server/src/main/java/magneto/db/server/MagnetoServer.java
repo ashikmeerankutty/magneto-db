@@ -111,7 +111,7 @@ public class MagnetoServer {
                     SocketChannel magnetoClient = this.magnetoSocket.accept();
                     magnetoClient.configureBlocking(false);
                     magnetoClient.register(selector, SelectionKey.OP_READ);
-                    System.out.println("Connection accepted: " + magnetoClient.getLocalAddress());
+                    System.out.println("Message Routed to : " + magnetoClient.getLocalAddress());
                 } else if (selectedKey.isReadable()) {
                     SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
                     ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
