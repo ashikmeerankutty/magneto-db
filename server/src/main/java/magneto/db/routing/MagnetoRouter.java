@@ -41,7 +41,7 @@ public class MagnetoRouter implements Node{
       MagnetoRouter node4 = new MagnetoRouter("IDC1","localhost",5674);
 
       //hash them to hash ring
-      ConsistentHashing<MagnetoRouter> consistentHashing = new ConsistentHashing<>(Arrays.asList(node1,node2,node3,node4),10);
+    //   ConsistentHashing<MagnetoRouter> consistentHashing = new ConsistentHashing<>(Arrays.asList(node1,node2,node3,node4),10);
 
 
       //we have 5 requester ip, we are trying them to route to one service node
@@ -66,9 +66,9 @@ public class MagnetoRouter implements Node{
 
   }
 
-  private static void goRoute(ConsistentHashing<MagnetoRouter> consistentHashing ,String ... requestIps){
-      for (String requestIp: requestIps) {
-          System.out.println(requestIp + " is route to " + consistentHashing.routeNode(requestIp));
-      }
-  }
+//   private static void goRoute(ConsistentHashing<MagnetoRouter> consistentHashing ,String ... requestIps){
+//       for (String requestIp: requestIps) {
+//           System.out.println(requestIp + " is route to " + consistentHashing.routeNode(requestIp));
+//       }
+//   }
 }

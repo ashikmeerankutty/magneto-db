@@ -15,6 +15,7 @@ public class MagnetoClientRouter {
     MagnetoRouter node3 = new MagnetoRouter("IDC1", "localhost", 5673);
     MagnetoRouter node4 = new MagnetoRouter("IDC1", "localhost", 5674);
 
+    // Uses 10 virtual nodes
     this.consistentHashing = new ConsistentHashing<>(Arrays.asList(node1, node2, node3, node4), 10);
   }
 
