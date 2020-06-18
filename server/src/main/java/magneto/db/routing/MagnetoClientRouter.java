@@ -29,14 +29,17 @@ public class MagnetoClientRouter {
     MagnetoRouter requestHost = this.consistentHashing.routeNode(key);
     int port = requestHost.getPort();
     String host = requestHost.getIp();
-    String data = routeData(host, port, requestData);
+    SocketChannel magnetoClient = getClientSocket(host, port, requestHost, key);
+    String data = routeData(magnetoClient, requestData);
     return data;
   }
 
-  public String routeData(String host, int port, String data) throws IOException {
-    InetSocketAddress magnetoAddress = new InetSocketAddress(host, port);
-    SocketChannel magnetoClient = SocketChannel.open(magnetoAddress);
-    System.out.println("Established connection to test via " + host + ":" + port);
+  public String routeData(SocketChannel magnetoClient, String data) throws IOException {
+    // get data from available node
+    
+    // SocketChannel magnetoClient = SocketChannel.open(magnetoAddress);
+    // SocketChannel magnetoClient = routeData(host, port, requestHost);
+
     byte[] message = new String(data).getBytes();
     ByteBuffer buffer = ByteBuffer.wrap(message);
     String[] words = new String[3];
@@ -55,5 +58,30 @@ public class MagnetoClientRouter {
     ByteBuffer finalBuffer = ByteBuffer.wrap(finalMessage);
     magnetoClient.write(finalBuffer);
     return "success";
+  }
+
+  public InetSocketAddress getSocketAddress(String host, int port) {
+    return new InetSocketAddress(host, port);
+  }
+
+  public SocketChannel getClientSocket(String host, int port, MagnetoRouter requestHost, String key) {
+    SocketChannel magnetoClient;
+    while(true) {
+      InetSocketAddress magnetoAddress = getSocketAddress(host, port);
+      try {
+        magnetoClient = SocketChannel.open(magnetoAddress);
+      } 
+      catch(IOException e) {
+        System.out.println("Server can't be connected routing to next server");
+        this.consistentHashing.removeNode(requestHost);
+        requestHost = this.consistentHashing.routeNode(key);
+        port = requestHost.getPort();
+        host = requestHost.getIp();
+        continue;
+      }
+      System.out.println("Server can't be connected routing to next server");
+      break;
+    }
+    return magnetoClient;  
   }
 }

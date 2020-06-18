@@ -111,7 +111,7 @@ public class MagnetoServer {
                     SocketChannel magnetoClient = this.magnetoSocket.accept();
                     magnetoClient.configureBlocking(false);
                     magnetoClient.register(selector, SelectionKey.OP_READ);
-                    System.out.println("Message Routed to : " + magnetoClient.getLocalAddress());
+                    System.out.println("Connection established to : " + magnetoClient.getLocalAddress());
                 } else if (selectedKey.isReadable()) {
                     SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
                     ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
@@ -122,10 +122,14 @@ public class MagnetoServer {
                     }
                     String[] words = new String[3];
                     words = data.split("\\s+");
+                    System.out.println(data);
                     String key = words[1];
                     String response;
                     if (words[0].equals("put")) {
                         response = magnetoClientRouter.getNode(key, data);
+                        byte[] message = new String(response).getBytes();
+                        ByteBuffer responseBuffer = ByteBuffer.wrap(message);
+                        magnetoClient.write(responseBuffer);
                     }
                     if (words[0].equals("get")) {
                         response = magnetoClientRouter.getNode(key, data);
