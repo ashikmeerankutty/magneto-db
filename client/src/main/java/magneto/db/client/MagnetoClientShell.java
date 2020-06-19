@@ -71,7 +71,9 @@ public class MagnetoClientShell {
                 this.magnetoClient.write(writeBuffer);
                 ByteBuffer readBuffer = ByteBuffer.allocate(256);
                 this.magnetoClient.read(readBuffer);
-                System.out.println(new String(readBuffer.array()).trim());
+                // Remove -1 appended to end
+                String result = new String(readBuffer.array()).trim().replaceAll("-1", "");
+                System.out.println(result);
             } else if (line.toLowerCase().startsWith("delete")) {
                 //TODO: Implement delete operation
                 System.out.println("delete(key)");
