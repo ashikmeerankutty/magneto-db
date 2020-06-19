@@ -41,15 +41,24 @@ public class MagnetoClientRouter {
     String host = requestHost.getIp();
     SocketChannel magnetoClient = getClientSocket(host, port, requestHost, key);
     String address = requestHost.getPort() + requestHost.getIp();
-    String data = routeData(magnetoClient, requestData);
-    replicateData(key, requestData, address);
-    return data; 
+    if (magnetoClient != null){
+      String data = routeData(magnetoClient, requestData);
+      System.out.println("Client request routed to : "+host+":"+port);
+      String dataFromReplicas = replicateData(key, requestData, address);
+      if(!data.equals("null")) {
+        return data;
+      }
+      return dataFromReplicas;
+    }
+    return replicateData(key, requestData, address);
   }
 
-  public void replicateData(String key, String requestData, String initialAddress) throws IOException {
+  public String replicateData(String key, String requestData, String initialAddress) throws IOException {
     int i = 1;
     int replicas = 2;// Number of replicas
     HashSet<String> addresses = new HashSet<String>(); 
+    SocketChannel magnetoClient = null;
+    String data = "";
     addresses.add(initialAddress);
     while(i <= replicas) {
       MagnetoRouter requestHost = this.consistentHashing.routeNextNode(key, i, addresses);
@@ -57,10 +66,15 @@ public class MagnetoClientRouter {
       String host = requestHost.getIp();
       String address = requestHost.getPort() + requestHost.getIp();
       addresses.add(address);
-      SocketChannel magnetoClient = getClientSocket(host, port, requestHost, key);
-      routeData(magnetoClient, requestData);
+      System.out.println("Request replicated at : "+host+":"+port);
+      magnetoClient = getClientSocket(host, port, requestHost, key);
+      if(magnetoClient == null) {
+        continue;
+      }
+      data = routeData(magnetoClient, requestData);
       i++;
     }
+    return data;
   }
 
   public String routeData(SocketChannel magnetoClient, String data) throws IOException {
@@ -100,7 +114,7 @@ public class MagnetoClientRouter {
       magnetoClient = SocketChannel.open(magnetoAddress);
     } 
     catch(IOException e) {
-      System.out.println("Server can't be connected");
+      System.out.println("Server can't be connected using replicas instead");
       return null;
     }
     return magnetoClient;  
