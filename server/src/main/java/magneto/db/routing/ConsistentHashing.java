@@ -1,9 +1,11 @@
 package magneto.db.routing;
+
 import magneto.db.node.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -86,6 +88,32 @@ public class ConsistentHashing<T extends Node> {
       Long nodeHashVal = !tailMap.isEmpty() ? tailMap.firstKey() : ring.firstKey();
       return ring.get(nodeHashVal).getPhysicalNode();
   }
+
+  public T routeNextNode(String objectKey, int replicaIndex, HashSet<String> addresses) {
+    if (ring.isEmpty()) {
+        return null;
+    }
+    Long hashVal = hashFunction.hash(objectKey);
+    SortedMap<Long,VirtualNode<T>> subRingMap = ring;
+    SortedMap<Long,VirtualNode<T>> tailMap = ring.tailMap(hashVal);
+    Long removeNodeHashVal = !tailMap.isEmpty() ? tailMap.firstKey() : subRingMap.firstKey();
+    int i = 0;
+    while(i <= replicaIndex-1){ 
+        System.out.println(replicaIndex+ " th Replication");
+        System.out.println(removeNodeHashVal);
+        System.out.println(" ------------------------------- ");
+        tailMap.remove(removeNodeHashVal);
+        subRingMap.remove(removeNodeHashVal);
+        removeNodeHashVal = !tailMap.isEmpty() ? tailMap.firstKey() : subRingMap.firstKey();
+        MagnetoRouter physicalNode = (MagnetoRouter) ring.get(removeNodeHashVal).getPhysicalNode();
+        String address = physicalNode.getPort() + physicalNode.getIp();
+        System.out.println(address);
+        if(!addresses.contains(address)){
+            i++;
+        }
+    }
+    return ring.get(removeNodeHashVal).getPhysicalNode();
+}
 
 
   public int getExistingReplicas(T pNode) {

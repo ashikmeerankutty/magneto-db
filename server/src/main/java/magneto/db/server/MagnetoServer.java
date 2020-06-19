@@ -126,13 +126,13 @@ public class MagnetoServer {
                     String key = words[1];
                     String response;
                     if (words[0].equals("put")) {
-                        response = magnetoClientRouter.getNode(key, data);
+                        response = magnetoClientRouter.getNodesFromMaster(key, data);
                         byte[] message = new String(response).getBytes();
                         ByteBuffer responseBuffer = ByteBuffer.wrap(message);
                         magnetoClient.write(responseBuffer);
                     }
                     if (words[0].equals("get")) {
-                        response = magnetoClientRouter.getNode(key, data);
+                        response = magnetoClientRouter.getNodesFromMaster(key, data);
                         byte[] message = new String(response).getBytes();
                         ByteBuffer responseBuffer = ByteBuffer.wrap(message);
                         magnetoClient.write(responseBuffer);

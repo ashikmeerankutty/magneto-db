@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class MagnetoClientRouter {
   ConsistentHashing<MagnetoRouter> consistentHashing;
@@ -31,7 +32,35 @@ public class MagnetoClientRouter {
     String host = requestHost.getIp();
     SocketChannel magnetoClient = getClientSocket(host, port, requestHost, key);
     String data = routeData(magnetoClient, requestData);
-    return data;
+    return data; 
+  }
+
+  public String getNodesFromMaster(String key, String requestData) throws IOException {
+    MagnetoRouter requestHost = this.consistentHashing.routeNode(key);
+    int port = requestHost.getPort();
+    String host = requestHost.getIp();
+    SocketChannel magnetoClient = getClientSocket(host, port, requestHost, key);
+    String address = requestHost.getPort() + requestHost.getIp();
+    String data = routeData(magnetoClient, requestData);
+    replicateData(key, requestData, address);
+    return data; 
+  }
+
+  public void replicateData(String key, String requestData, String initialAddress) throws IOException {
+    int i = 1;
+    int replicas = 2;// Number of replicas
+    HashSet<String> addresses = new HashSet<String>(); 
+    addresses.add(initialAddress);
+    while(i <= replicas) {
+      MagnetoRouter requestHost = this.consistentHashing.routeNextNode(key, i, addresses);
+      int port = requestHost.getPort();
+      String host = requestHost.getIp();
+      String address = requestHost.getPort() + requestHost.getIp();
+      addresses.add(address);
+      SocketChannel magnetoClient = getClientSocket(host, port, requestHost, key);
+      routeData(magnetoClient, requestData);
+      i++;
+    }
   }
 
   public String routeData(SocketChannel magnetoClient, String data) throws IOException {
@@ -66,21 +95,13 @@ public class MagnetoClientRouter {
 
   public SocketChannel getClientSocket(String host, int port, MagnetoRouter requestHost, String key) {
     SocketChannel magnetoClient;
-    while(true) {
-      InetSocketAddress magnetoAddress = getSocketAddress(host, port);
-      try {
-        magnetoClient = SocketChannel.open(magnetoAddress);
-      } 
-      catch(IOException e) {
-        System.out.println("Server can't be connected routing to next server");
-        this.consistentHashing.removeNode(requestHost);
-        requestHost = this.consistentHashing.routeNode(key);
-        port = requestHost.getPort();
-        host = requestHost.getIp();
-        continue;
-      }
-      System.out.println("Server can't be connected routing to next server");
-      break;
+    InetSocketAddress magnetoAddress = getSocketAddress(host, port);
+    try {
+      magnetoClient = SocketChannel.open(magnetoAddress);
+    } 
+    catch(IOException e) {
+      System.out.println("Server can't be connected");
+      return null;
     }
     return magnetoClient;  
   }
