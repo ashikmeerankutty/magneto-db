@@ -99,15 +99,11 @@ public class ConsistentHashing<T extends Node> {
     Long removeNodeHashVal = !tailMap.isEmpty() ? tailMap.firstKey() : subRingMap.firstKey();
     int i = 0;
     while(i <= replicaIndex-1){ 
-        System.out.println(replicaIndex+ " th Replication");
-        System.out.println(removeNodeHashVal);
-        System.out.println(" ------------------------------- ");
         tailMap.remove(removeNodeHashVal);
         subRingMap.remove(removeNodeHashVal);
         removeNodeHashVal = !tailMap.isEmpty() ? tailMap.firstKey() : subRingMap.firstKey();
         MagnetoRouter physicalNode = (MagnetoRouter) ring.get(removeNodeHashVal).getPhysicalNode();
         String address = physicalNode.getPort() + physicalNode.getIp();
-        System.out.println(address);
         if(!addresses.contains(address)){
             i++;
         }
