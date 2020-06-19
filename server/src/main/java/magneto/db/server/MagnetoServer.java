@@ -70,7 +70,7 @@ public class MagnetoServer {
                 if (selectedKey.isAcceptable()) {
                     SocketChannel magnetoClient = this.magnetoSocket.accept();
                     magnetoClient.configureBlocking(false).register(selector, SelectionKey.OP_READ);
-                    System.out.println("Connection accepted: " + magnetoClient.getLocalAddress());
+                    System.out.println("Connection accepted from client to " + magnetoClient.getLocalAddress());
                 } else if (selectedKey.isReadable()) {
                     SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
                     ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
@@ -111,7 +111,7 @@ public class MagnetoServer {
                     SocketChannel magnetoClient = this.magnetoSocket.accept();
                     magnetoClient.configureBlocking(false);
                     magnetoClient.register(selector, SelectionKey.OP_READ);
-                    System.out.println("Connection established to : " + magnetoClient.getLocalAddress());
+                    System.out.println("Connection accepted from client to : " + magnetoClient.getLocalAddress());
                 } else if (selectedKey.isReadable()) {
                     SocketChannel magnetoClient = (SocketChannel) selectedKey.channel();
                     ByteBuffer magnetoBuffer = ByteBuffer.allocate(256);
@@ -122,7 +122,7 @@ public class MagnetoServer {
                     }
                     String[] words = new String[3];
                     words = data.split("\\s+");
-                    System.out.println(data);
+                    System.out.println("Message received: " + data);
                     String key = words[1];
                     String response;
                     if (words[0].equals("put")) {
@@ -137,7 +137,6 @@ public class MagnetoServer {
                         ByteBuffer responseBuffer = ByteBuffer.wrap(message);
                         magnetoClient.write(responseBuffer);
                     }
-                    System.out.println("Message received: " + data);
                 }
             }
             magnetoIterator.remove();
