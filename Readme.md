@@ -1,6 +1,6 @@
 ## Magneto DB
 
-Test store designed based on [Consistent Hashing and
+Test key-value store designed based on [Consistent Hashing and
 Bounded loads](https://arxiv.org/pdf/1608.01350.pdf) research paper. Consistent hashing was used to distribute
 data across multiple nodes in the cluster. The communication channel was
 implemented using JAVA NIO Socket Channel. A cluster was simulated using
