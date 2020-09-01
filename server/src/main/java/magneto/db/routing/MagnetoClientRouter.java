@@ -20,11 +20,6 @@ public class MagnetoClientRouter {
     this.consistentHashing = new ConsistentHashing<>(Arrays.asList(node1, node2, node3, node4), 10);
   }
 
-  // private static String goRoute(ConsistentHashing<MagnetoRouter>
-  // consistentHashing, String requestKey) {
-  // return requestKey + " is route to " +
-  // consistentHashing.routeNode(requestKey);
-  // }
 
   public String getNode(String key, String requestData) throws IOException {
     MagnetoRouter requestHost = this.consistentHashing.routeNode(key);
@@ -78,11 +73,6 @@ public class MagnetoClientRouter {
   }
 
   public String routeData(SocketChannel magnetoClient, String data) throws IOException {
-    // get data from available node
-    
-    // SocketChannel magnetoClient = SocketChannel.open(magnetoAddress);
-    // SocketChannel magnetoClient = routeData(host, port, requestHost);
-
     byte[] message = new String(data).getBytes();
     ByteBuffer buffer = ByteBuffer.wrap(message);
     String[] words = new String[3];

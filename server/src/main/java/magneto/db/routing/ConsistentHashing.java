@@ -46,7 +46,7 @@ public class ConsistentHashing<T extends Node> {
   }
 
   /**
-   * add physic node to the hash ring with some virtual nodes
+   * add physical node to the hash ring with some virtual nodes
    * @param pNode physical node needs added to hash ring
    * @param vNodeCount the number of virtual node of the physical node. Value should be greater than or equals to 0
    */
